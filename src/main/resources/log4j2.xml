@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="info" monitorInterval="0">
+    <Properties>
+        <Property name="filename">/opt/log/jpa-log.log</Property>
+    </Properties>
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <!--<PatternLayout pattern="%-5level %d{HH:mm:ss} [%t]  %logger{36} - %msg%n"/>-->
+            <PatternLayout pattern="%d{HH:mm:ss} %class{36}.%M:%L \n[%-5level] %msg%n"/>
+        </Console>
+        <RollingFile name="RollingFile" fileName="${filename}"
+                     filePattern="log/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
+            <PatternLayout pattern="%d{yyyy-MM-dd 'at' HH:mm:ss z} %-5level %class{36} %L %M - %msg%xEx%n"/>
+            <SizeBasedTriggeringPolicy size="50MB"/>
+        </RollingFile>
+    </Appenders>
+    <Loggers>
+        <!--隐藏Hibernate的参数问号警告-->
+        <Logger name="org.hibernate.hql.internal.ast.HqlSqlWalker" level="ERROR" additivity="false">
+            <AppenderRef ref="Console"/>
+        </Logger>
+        <!--项目下的日志输出到文件-->
+        <Logger name="com.liub.lucene" level="ERROR" additivity="false">
+            <AppenderRef ref="RollingFile"/>
+            <AppenderRef ref="Console"/>
+        </Logger>
+
+        <logger name="org.springframework" level="info" />
+        <logger name="org.springframework.boot" level="debug" />
+        <logger name="org.hibernate.tool.hbm2ddl" level="trace" />
+
+        <Root level="warn">
+            <AppenderRef ref="Console"/>
+        </Root>
+    </Loggers>
+</Configuration>
